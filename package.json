@@ -25,5 +25,11 @@
     "webpack-dev-middleware": "^1.6.1",
     "webpack-dev-server": "^1.14.1",
     "webpack-hot-middleware": "^2.10.0"
+  },
+  "dependencies": {
+    "ffmetadata": "^1.4.0",
+    "jsmediatags": "^3.7.0",
+    "react-dropzone": "^4.0.0",
+    "underscore": "^1.8.3"
   }
 }
