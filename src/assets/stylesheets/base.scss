@@ -1,4 +1,31 @@
-h1 {
-  font-family: helvetica;
-  font-weight: 200;
+html, body {
+  margin: 0;
+  width: 100%;
+}
+
+body {
+  margin: 10px;
+  font-family: "Helvetica", sans-serif;
+  overflow-x: hidden;
+}
+
+.album-art {
+  max-width: 150px;
+}
+
+.input-form {
+  margin-bottom: 10px;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  input {
+      padding: 5px;
+      width: 100%;
+  }
 }

@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "ffmetadata": "^1.4.0",
+    "ffmetadata-ohnx-fork": "^1.4.0-a",
     "jsmediatags": "^3.7.0",
     "react-dropzone": "^4.0.0",
     "underscore": "^1.8.3"

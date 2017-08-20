@@ -1,38 +1,52 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'underscore';
+import Dropzone from 'react-dropzone';
+
+
+import Picture from './Base64Picture';
+import { defaultMetadata, addMissingKeysToMetadata } from '../util/metadata';
 
 export default class MetadataForm extends Component {
-  
   constructor(props) {
     super(props);
+
+    this.state = {
+      metadata: addMissingKeysToMetadata(this.props.metadata)
+    }
+
+    _.bindAll(this, 'handleSubmit', 'handleAttributeChange');
   }
 
-  base64encode(picture) {
-    return _.map(picture.data, (imageString) => {
-      return String.fromCharCode(imageString);
-    }).join('');
+  handleAttributeChange(attribute) {
+    return (event) => {
+      let metadata = this.state.metadata;
+      metadata[attribute] = event.target.value;
+      this.setState({metadata: metadata});
+    }
   }
 
-  renderPicture() {
-    let base64String = `data:image/${this.props.metadata.picture.format};base64,${window.btoa(this.base64encode(this.props.metadata.picture))}`
-    console.log(base64String.length);
-    console.log(this.props.metadata.picture);
-    return (
-      <img src={base64String}/>
-    )
+  handleSubmit() {
+    this.props.onSubmit(this.state.metadata);
   }
 
   render() {
-    console.log(this.props.metadata.picture);
     return (
       <div>
-      {this.renderPicture()}
+      {this.state.metadata.picture && <Picture picture={this.state.metadata.picture} />}
 
-      {_.map(this.props.metadata, (val, key) => {
+      <Dropzone onDrop={(acc, rej) => {console.log(acc)}} ></Dropzone>
+
+      {_.map(this.state.metadata, (val, key) => {
         return (
-          <div>{key}: {typeof val === 'string' ? val : ""}</div>
+          <div className="input-form">
+            <label>{key}</label> 
+            <input type="text" value={typeof val === 'string' ? val : ""} onChange={this.handleAttributeChange(key)} />
+          </div>
         )
       })}
+
+      <button onClick={this.handleSubmit}>Save</button>
+
       </div>
     );
   }

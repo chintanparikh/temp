@@ -4,19 +4,11 @@ import Dropzone from 'react-dropzone';
 import _ from 'underscore';
 
 import MetadataForm from "./MetadataForm";
+import { removeRejectedKeys } from '../util/metadata';
+import { filterObject } from "../util/util";
 
-/* Full list of the metadata that ffmpeg supports
-  “title”
-  “author”
-  “album”
-  “year”
-  “comment”
-  “track”
-  “genre”
-*/
-var ffmetadata = window.require('ffmetadata');
+var ffmetadata = window.require('ffmetadata-ohnx-fork');
 var jsmediatags = window.require("jsmediatags");
-
 
 class App extends Component {
 
@@ -25,7 +17,7 @@ class App extends Component {
 
     this.state = {file: null, metadata: null, path: null}
 
-    this.handleDrop = this.handleDrop.bind(this);
+    _.bindAll(this, 'handleDrop', 'handleSubmit')
   }
 
   handleDrop(acceptedFiles, rejectedFiles) {
@@ -36,22 +28,8 @@ class App extends Component {
 
     jsmediatags.read(path, {
       onSuccess: function(tag) {
-        // acceptable keys
-        let keys = ["title", "artist", "album", "year", "comment", "track", "genre", "picture", "lyrics"];
-
         // Filter out all the metadata that we don't want (because ffmetadata doesn't support it)
-        let filteredMetadata = _.map(tag.tags, (val, key) => {
-          if (_.contains(keys, key)) {
-            return {key: key, val: val}
-          }
-        });
-        
-        filteredMetadata = _.filter(filteredMetadata, (val) => {
-          return val !== undefined
-        })
-
-        filteredMetadata = _.object(_.map(filteredMetadata, _.values))
-        
+        let filteredMetadata = removeRejectedKeys(tag.tags)
         that.setState({file: file, path: path, metadata: filteredMetadata})
       },
       onError: function(error) {
@@ -60,19 +38,38 @@ class App extends Component {
     });
   }
 
-  handleChangeMetadata(metadata) {
-    this.setState({metadata: metadata});
-  }
+  handleSubmit(metadata) {
+    let filteredMetadata = _.map(metadata, (val, key) => {
+      if (val !== '' && val !== null && val !== undefined) {
+        return {key: key, val: val}
+      }
+    });
 
-  handleSave() {
+    filteredMetadata = _.filter(filteredMetadata, (val) => {
+      return val !== undefined
+    })
+
+    filteredMetadata = _.object(_.map(filteredMetadata, _.values))
+    console.log(filteredMetadata);
+
     // Write Metadata to file
+    ffmetadata.write(this.state.path, filteredMetadata, (err) => {
+      if (err) console.error("Error writing metadata", err);
+      else console.log("Data written");
+    })
+
+    this.setState({metadata: filteredMetadata});
   }
 
   render() {
     if (this.state.file) {
-      return <MetadataForm metadata={this.state.metadata}
-                           onSubmit={this.handleChangeMetadata}
-                           onSave={this.handleSave}></MetadataForm>
+      return (
+        <div>
+          <MetadataForm metadata={this.state.metadata}
+                        onSubmit={this.handleSubmit}></MetadataForm>
+          <Dropzone onDrop={this.handleDrop} ></Dropzone>
+        </div>
+      );
     } else {
       return (
         <Dropzone onDrop={this.handleDrop} ></Dropzone>

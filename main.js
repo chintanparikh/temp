@@ -6,15 +6,13 @@ var app = require('app');
 // Module to create native browser window.
 var BrowserWindow = require('browser-window')
 
-var ffmetadata = require('ffmetadata');
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600});
+  mainWindow = new BrowserWindow({width: 330, height: 600});
 
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/dist/index.html');
