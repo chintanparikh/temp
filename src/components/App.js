@@ -4,6 +4,7 @@ import Dropzone from 'react-dropzone';
 import _ from 'underscore';
 
 import MetadataForm from "./MetadataForm";
+import WriteMetadataService from '../util/WriteMetadataService';
 import { removeRejectedKeys } from '../util/metadata';
 import { filterObject } from "../util/util";
 
@@ -43,26 +44,29 @@ class App extends Component {
   }
 
   handleSubmit(metadata) {
-    let filteredMetadata = _.map(metadata, (val, key) => {
-      if (val !== '' && val !== null && val !== undefined) {
-        return {key: key, val: val};
-      }
-    });
+    console.log(this.state.path);
+    console.log(metadata);
+    const writtenMetadata = WriteMetadataService.process(this.state.path, metadata);
 
-    filteredMetadata = _.filter(filteredMetadata, (val) => {
-      return val !== undefined;
-    })
+    // let filteredMetadata = _.map(metadata, (val, key) => {
+    //   if (val !== '' && val !== null && val !== undefined) {
+    //     return {key: key, val: val};
+    //   }
+    // });
+    //
+    // filteredMetadata = _.filter(filteredMetadata, (val) => {
+    //   return val !== undefined;
+    // })
+    //
+    // filteredMetadata = _.object(_.map(filteredMetadata, _.values))
+    //
+    // // Write Metadata to file
+    // ffmetadata.write(this.state.path, filteredMetadata, (err) => {
+    //   if (err) console.error("Error writing metadata", err);
+    //   else console.log("Data written");
+    // })
 
-    filteredMetadata = _.object(_.map(filteredMetadata, _.values))
-    console.log(filteredMetadata);
-
-    // Write Metadata to file
-    ffmetadata.write(this.state.path, filteredMetadata, (err) => {
-      if (err) console.error("Error writing metadata", err);
-      else console.log("Data written");
-    })
-
-    this.setState({metadata: filteredMetadata});
+    this.setState({metadata: writtenMetadata});
   }
 
   render() {

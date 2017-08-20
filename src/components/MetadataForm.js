@@ -34,7 +34,6 @@ export default class MetadataForm extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <div>
       {this.state.metadata.picture && <Picture picture={this.state.metadata.picture} />}
@@ -45,7 +44,11 @@ export default class MetadataForm extends Component {
         return (
           <div className="input-form">
             <label>{key}</label>
-            <input type="text" value={typeof val === 'string' ? val : ""} onChange={this.handleAttributeChange(key)} />
+            <input
+              type="text"
+              value={typeof val === 'string' ? val : ""}
+              onChange={this.handleAttributeChange(key)}
+            />
           </div>
         )
       })}
