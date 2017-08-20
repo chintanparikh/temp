@@ -12,9 +12,13 @@ export default class MetadataForm extends Component {
 
     this.state = {
       metadata: addMissingKeysToMetadata(this.props.metadata)
-    }
+    };
 
     _.bindAll(this, 'handleSubmit', 'handleAttributeChange');
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({metadata: addMissingKeysToMetadata(props.metadata)});
   }
 
   handleAttributeChange(attribute) {
@@ -30,6 +34,7 @@ export default class MetadataForm extends Component {
   }
 
   render() {
+    console.log(this.state);
     return (
       <div>
       {this.state.metadata.picture && <Picture picture={this.state.metadata.picture} />}
@@ -39,7 +44,7 @@ export default class MetadataForm extends Component {
       {_.map(this.state.metadata, (val, key) => {
         return (
           <div className="input-form">
-            <label>{key}</label> 
+            <label>{key}</label>
             <input type="text" value={typeof val === 'string' ? val : ""} onChange={this.handleAttributeChange(key)} />
           </div>
         )

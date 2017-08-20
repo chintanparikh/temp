@@ -15,9 +15,9 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {file: null, metadata: null, path: null}
+    this.state = {file: null, metadata: null, path: null};
 
-    _.bindAll(this, 'handleDrop', 'handleSubmit')
+    _.bindAll(this, 'handleDrop', 'handleSubmit');
   }
 
   handleDrop(acceptedFiles, rejectedFiles) {
@@ -29,8 +29,12 @@ class App extends Component {
     jsmediatags.read(path, {
       onSuccess: function(tag) {
         // Filter out all the metadata that we don't want (because ffmetadata doesn't support it)
-        let filteredMetadata = removeRejectedKeys(tag.tags)
-        that.setState({file: file, path: path, metadata: filteredMetadata})
+        // TODO Bugfix: On the second call, jsmediatags will for some reason merge the newly dragged
+        // file's metadata with the old metadata
+        const filteredMetadata = removeRejectedKeys(tag.tags);
+        const newState = {file: file, path: path, metadata: filteredMetadata};
+
+        that.setState(newState);
       },
       onError: function(error) {
         console.log(':(', error.type, error.info);
@@ -41,12 +45,12 @@ class App extends Component {
   handleSubmit(metadata) {
     let filteredMetadata = _.map(metadata, (val, key) => {
       if (val !== '' && val !== null && val !== undefined) {
-        return {key: key, val: val}
+        return {key: key, val: val};
       }
     });
 
     filteredMetadata = _.filter(filteredMetadata, (val) => {
-      return val !== undefined
+      return val !== undefined;
     })
 
     filteredMetadata = _.object(_.map(filteredMetadata, _.values))
