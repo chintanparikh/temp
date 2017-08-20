@@ -44,9 +44,8 @@ class App extends Component {
   }
 
   handleSubmit(metadata) {
-    console.log(this.state.path);
-    console.log(metadata);
-    const writtenMetadata = WriteMetadataService.process(this.state.path, metadata);
+    const metadataWriter = new WriteMetadataService();
+    const writtenMetadata = metadataWriter.process(this.state.path, metadata);
 
     // let filteredMetadata = _.map(metadata, (val, key) => {
     //   if (val !== '' && val !== null && val !== undefined) {
